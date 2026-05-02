@@ -55,8 +55,7 @@ export default function HomePage() {
                 lineHeight: 1.65,
               }}
             >
-              Phargos is the AI-native ERP platform built for distribution operators. It knows your
-              industry before you configure a single field — and it deploys in days, not months.
+              Not an ERP you mold your business into. One that molds to yours.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4">
