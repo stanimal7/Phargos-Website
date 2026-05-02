@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-nautical: #0D2137;
+  --color-nautical-signal: #1A3A52;
+  --color-pharos-white: #F5F2EC;
+  --color-lighthouse-gold: #C9A84C;
+  --color-lighthouse-gold-dark: #B8973E;
+  --color-mist: #8A9BA8;
+  --color-beacon-light: #E8F4F8;
+
+  /* Font Families */
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  --background: #F5F2EC;
+  --foreground: #0D2137;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scroll animation utility */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 400ms ease-out, transform 400ms ease-out;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    opacity: 1;
+    transform: none;
+  }
+}
