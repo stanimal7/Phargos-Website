@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Teckton Employee Survey — Phargos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:  #1C2B14;
+      --accent:  #96C95B;
+      --bg:      #F5F1EB;
+      --card:    #FFFFFF;
+      --text:    #2C2C2C;
+      --muted:   #7A7A6E;
+      --border:  #E2DDD6;
+      --danger:  #C0392B;
+      --radius:  14px;
+      --shadow:  0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Header ───────────────────────────────────────────── */
+    .header {
+      background: var(--forest);
+      padding: 18px 24px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-brand {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .header-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    /* ── Progress bar ─────────────────────────────────────── */
+    .progress-wrap {
+      background: var(--forest);
+      padding: 0 0 12px;
+    }
+
+    .progress-bar-bg {
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 0 24px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .progress-label {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Main content ─────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 20px 60px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Question Card ────────────────────────────────────── */
+    .question-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px 28px;
+      width: 100%;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-number {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .question-text {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    /* ── Multiple Choice ──────────────────────────────────── */
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .choice-btn {
+      display: block;
+      width: 100%;
+      padding: 16px 20px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+
+    .choice-btn:hover, .choice-btn:focus {
+      border-color: var(--accent);
+      background: rgba(150, 201, 91, 0.08);
+    }
+
+    .choice-btn.selected {
+      border-color: var(--accent);
+      background: rgba(150, 201, 91, 0.15);
+      color: var(--forest);
+    }
+
+    .choice-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ── Scale 1-5 ────────────────────────────────────────── */
+    .scale-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .scale-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .scale-btn {
+      flex: 1;
+      aspect-ratio: 1;
+      min-height: 58px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scale-btn:hover, .scale-btn:focus {
+      border-color: var(--accent);
+      background: rgba(150, 201, 91, 0.08);
+    }
+
+    .scale-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--forest);
+    }
+
+    .scale-btn:active {
+      transform: scale(0.95);
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 0 4px;
+    }
+
+    /* ── Text inputs ──────────────────────────────────────── */
+    .text-input, .textarea-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 16px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease;
+      resize: vertical;
+    }
+
+    .text-input:focus, .textarea-input:focus {
+      border-color: var(--accent);
+    }
+
+    .textarea-input {
+      min-height: 120px;
+    }
+
+    /* ── Next button ──────────────────────────────────────── */
+    .next-btn {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 17px 24px;
+      background: var(--forest);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+
+    .next-btn:hover {
+      background: #253a1b;
+    }
+
+    .next-btn:active {
+      transform: scale(0.98);
+    }
+
+    .next-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ── Error ────────────────────────────────────────────── */
+    .error-screen, .thank-you-screen, .loading-screen, .demo-screen {
+      text-align: center;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .error-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--danger);
+    }
+
+    .error-body {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Thank you screen ─────────────────────────────────── */
+    .ty-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(150, 201, 91, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .ty-icon svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .ty-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: 10px;
+    }
+
+    .ty-body {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .ty-confirm {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: rgba(150, 201, 91, 0.15);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--forest);
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    /* ── Demo mode banner ─────────────────────────────────── */
+    .demo-banner {
+      background: #FFF3CD;
+      border-bottom: 1px solid #FFEAA7;
+      padding: 10px 16px;
+      text-align: center;
+      font-size: 13px;
+      color: #856404;
+      font-weight: 500;
+    }
+
+    .demo-banner a {
+      color: #533f03;
+      font-weight: 600;
+    }
+
+    /* ── Demo responses panel ─────────────────────────────── */
+    .demo-responses {
+      margin-top: 24px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .demo-responses h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .demo-response-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-response-item:last-child {
+      border-bottom: none;
+    }
+
+    .demo-q {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .demo-a {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── Loading ──────────────────────────────────────────── */
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────── -->
+<div class="header">
+  <!-- Phargos Lighthouse Logo (inline SVG) -->
+  <svg class="logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="36" height="36" rx="8" fill="rgba(255,255,255,0.08)"/>
+    <!-- Lighthouse body -->
+    <rect x="15" y="14" width="6" height="12" rx="1" fill="#96C95B"/>
+    <!-- Lighthouse top / light housing -->
+    <rect x="13" y="11" width="10" height="4" rx="1" fill="#96C95B"/>
+    <!-- Light beam left -->
+    <line x1="13" y1="13" x2="6" y2="10" stroke="rgba(150,201,91,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Light beam right -->
+    <line x1="23" y1="13" x2="30" y2="10" stroke="rgba(150,201,91,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Base -->
+    <rect x="12" y="26" width="12" height="3" rx="1" fill="#96C95B"/>
+    <!-- Door -->
+    <rect x="17" y="22" width="2" height="4" rx="0.5" fill="rgba(28,43,20,0.6)"/>
+    <!-- Windows -->
+    <circle cx="18" cy="17.5" r="1" fill="rgba(28,43,20,0.5)"/>
+    <!-- Light dot -->
+    <circle cx="18" cy="13" r="1.5" fill="#FFF"/>
+  </svg>
+
+  <div class="header-text">
+    <div class="header-brand">Phargos</div>
+    <div class="header-sub">Employee Survey — Teckton</div>
+  </div>
+</div>
+
+<!-- ── Progress bar ────────────────────────────────────────────── -->
+<div class="progress-wrap" id="progressWrap" style="display:none">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel"></div>
+</div>
+
+<!-- ── Demo banner ─────────────────────────────────────────────── -->
+<div class="demo-banner" id="demoBanner" style="display:none">
+  ⚠️ Demo Mode — responses saved locally only. <a href="#" id="demoInfoLink">What does this mean?</a>
+</div>
+
+<!-- ── Main ────────────────────────────────────────────────────── -->
+<main class="main" id="main"></main>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════════
+
+const CONFIG = {
+  DEMO_MODE: false,          // Set false + add API_URL to go live
+  API_URL: 'https://script.google.com/a/macros/teckton.com/s/AKfycbws2UOtJlAU-HTxR2LonyDSFDiPNfvQRHRgtHHLWLjxGIAqXBqmhjOPU2NnrHmpp34XOQ/exec',              // Apps Script web app URL goes here after deploy
+  SHEET_ID: '1BgcgG8z61tfL7XwKNEomd3YpYjRhgzgas3H-mRCqDxs',
+};
+
+// ══════════════════════════════════════════════════════════════════
+// SURVEY DEFINITIONS
+// Each survey is keyed by the ?person= URL param (lowercase).
+// Supported question types: 'multiple_choice', 'scale', 'short_text', 'long_text'
+// ══════════════════════════════════════════════════════════════════
+
+const SURVEYS = {
+
+  // ── Vicki ────────────────────────────────────────────────────
+  vicki: {
+    name: 'Vicki',
+    intro: "Hi Vicki — this survey is a chance for you to share how things are going, what's working well, and where you'd like support. There are no wrong answers. It should take about 5 minutes.",
+    questions: [
+      // TODO: Replace placeholder questions with content from EMPLOYEE_SURVEYS.md when available
+      {
+        id: 'v1',
+        type: 'scale',
+        text: 'Overall, how satisfied are you with your work at Teckton right now?',
+        labels: ['Not satisfied', 'Very satisfied'],
+      },
+      {
+        id: 'v2',
+        type: 'multiple_choice',
+        text: 'Which area of your work feels most energizing right now?',
+        choices: [
+          'Customer relationships',
+          'Getting orders right',
+          'Problem-solving on the fly',
+          'Working with the team',
+          'Learning something new',
+        ],
+      },
+      {
+        id: 'v3',
+        type: 'multiple_choice',
+        text: 'Where do you feel the most friction or frustration in your day-to-day?',
+        choices: [
+          'Finding information / looking things up',
+          'Back-and-forth with customers',
+          'Internal processes or approvals',
+          'Technology / systems',
+          'Other (explain in next question)',
+        ],
+      },
+      {
+        id: 'v4',
+        type: 'long_text',
+        text: "If there's one thing you'd change to make your job easier or better — what would it be?",
+      },
+      {
+        id: 'v5',
+        type: 'scale',
+        text: 'How well do you feel equipped with the tools and information you need to do your job well?',
+        labels: ['Not equipped', 'Fully equipped'],
+      },
+      {
+        id: 'v6',
+        type: 'multiple_choice',
+        text: 'How do you prefer to receive feedback from Stan?',
+        choices: [
+          'In the moment, when it happens',
+          'Regular one-on-ones',
+          'Written notes / messages',
+          'Group meetings',
+          'I\'m flexible — any of these works',
+        ],
+      },
+      {
+        id: 'v7',
+        type: 'short_text',
+        text: "What's one thing going really well that you'd like Stan to know about?",
+      },
+      {
+        id: 'v8',
+        type: 'long_text',
+        text: 'Anything else on your mind — about your role, the team, the business, or anything at all?',
+      },
+    ],
+  },
+
+  // ── Samantha ─────────────────────────────────────────────────
+  samantha: {
+    name: 'Samantha',
+    intro: "Hi Samantha — thanks for taking a few minutes on this. These questions are here to help Stan understand how you're doing and how Teckton can support you better.",
+    questions: [
+      // TODO: Replace with content from EMPLOYEE_SURVEYS.md when available
+      {
+        id: 's1',
+        type: 'scale',
+        text: 'Overall, how satisfied are you with your work at Teckton right now?',
+        labels: ['Not satisfied', 'Very satisfied'],
+      },
+      {
+        id: 's2',
+        type: 'multiple_choice',
+        text: 'What part of your role do you find most fulfilling?',
+        choices: [
+          'Keeping things accurate and organized',
+          'Supporting the team',
+          'Solving problems',
+          'Customer or vendor interactions',
+          'Financial / reporting work',
+        ],
+      },
+      {
+        id: 's3',
+        type: 'long_text',
+        text: "What's one area where you feel like Teckton could improve how it operates?",
+      },
+      {
+        id: 's4',
+        type: 'scale',
+        text: 'How clear are you on what success looks like in your role?',
+        labels: ['Very unclear', 'Crystal clear'],
+      },
+      {
+        id: 's5',
+        type: 'short_text',
+        text: "Is there a skill or area you'd like to grow in? If so, what?",
+      },
+      {
+        id: 's6',
+        type: 'long_text',
+        text: 'Anything else you want Stan to know?',
+      },
+    ],
+  },
+
+  // ── Thomas ───────────────────────────────────────────────────
+  thomas: {
+    name: 'Thomas',
+    intro: "Hi Thomas — this is a quick check-in to hear how things are going from your perspective. Be as candid as you'd like.",
+    questions: [
+      // TODO: Replace with content from EMPLOYEE_SURVEYS.md when available
+      {
+        id: 't1',
+        type: 'scale',
+        text: 'How satisfied are you with your current role at Teckton?',
+        labels: ['Not satisfied', 'Very satisfied'],
+      },
+      {
+        id: 't2',
+        type: 'multiple_choice',
+        text: "What best describes how you feel about Teckton's direction right now?",
+        choices: [
+          "Excited — we're building something great",
+          'Optimistic — good things ahead',
+          'Neutral — head down, doing the work',
+          "Uncertain — not sure where things are headed",
+          "Concerned — something needs to change",
+        ],
+      },
+      {
+        id: 't3',
+        type: 'long_text',
+        text: "What's the single biggest thing that would improve your day-to-day experience?",
+      },
+      {
+        id: 't4',
+        type: 'scale',
+        text: 'How supported do you feel by Stan and the leadership team?',
+        labels: ['Not supported', 'Very supported'],
+      },
+      {
+        id: 't5',
+        type: 'long_text',
+        text: 'Anything else on your mind?',
+      },
+    ],
+  },
+
+  // ── Drew ─────────────────────────────────────────────────────
+  drew: {
+    name: 'Drew',
+    intro: "Hey Drew — appreciate you taking a few minutes. These questions are all about how you're experiencing things at Teckton and where we can do better.",
+    questions: [
+      // TODO: Replace with content from EMPLOYEE_SURVEYS.md when available
+      {
+        id: 'd1',
+        type: 'scale',
+        text: 'Overall, how would you rate your job satisfaction at Teckton right now?',
+        labels: ['Low', 'High'],
+      },
+      {
+        id: 'd2',
+        type: 'multiple_choice',
+        text: 'Which part of your financial work takes up the most time?',
+        choices: [
+          'AP — vendor invoices and payments',
+          'AR — collections and receivables',
+          'Inventory and supply chain reporting',
+          'Export documentation',
+          'Reconciliation and auditing',
+        ],
+      },
+      {
+        id: 'd3',
+        type: 'long_text',
+        text: 'Where do you see the most inefficiency in Teckton\'s financial processes right now?',
+      },
+      {
+        id: 'd4',
+        type: 'scale',
+        text: 'How well does D365 support the work you need to do?',
+        labels: ['Poorly', 'Very well'],
+      },
+      {
+        id: 'd5',
+        type: 'short_text',
+        text: 'If you could automate one repetitive task in your workflow, what would it be?',
+      },
+      {
+        id: 'd6',
+        type: 'long_text',
+        text: 'Anything else?',
+      },
+    ],
+  },
+
+  // ── Mark ─────────────────────────────────────────────────────
+  mark: {
+    name: 'Mark',
+    intro: "Hey Mark — taking a few minutes here goes a long way. Stan wants to hear how warehouse ops feel from your end and what would make things better.",
+    questions: [
+      // TODO: Replace with content from EMPLOYEE_SURVEYS.md when available
+      {
+        id: 'm1',
+        type: 'scale',
+        text: 'How satisfied are you with how warehouse operations run day-to-day?',
+        labels: ['Not satisfied', 'Very satisfied'],
+      },
+      {
+        id: 'm2',
+        type: 'multiple_choice',
+        text: 'What slows you down most in the warehouse?',
+        choices: [
+          'Inventory not where it should be',
+          'Sales order entry or tracking',
+          'Communication with the office team',
+          'Equipment or systems issues',
+          'Waiting on approvals or information',
+        ],
+      },
+      {
+        id: 'm3',
+        type: 'long_text',
+        text: "What's one thing that would make warehouse ops run smoother?",
+      },
+      {
+        id: 'm4',
+        type: 'scale',
+        text: 'How clear are your priorities and responsibilities on a given day?',
+        labels: ['Very unclear', 'Always clear'],
+      },
+      {
+        id: 'm5',
+        type: 'short_text',
+        text: "Anything about D365 or order entry you'd like to flag?",
+      },
+      {
+        id: 'm6',
+        type: 'long_text',
+        text: 'Anything else on your mind?',
+      },
+    ],
+  },
+
+  // ── Scotty ───────────────────────────────────────────────────
+  scotty: {
+    name: 'Scotty',
+    intro: "Hey Scotty — this is a quick check-in. Appreciate your candor.",
+    questions: [
+      // TODO: Replace with content from EMPLOYEE_SURVEYS.md when available
+      {
+        id: 'sc1',
+        type: 'scale',
+        text: 'How satisfied are you with your role at Teckton overall?',
+        labels: ['Not satisfied', 'Very satisfied'],
+      },
+      {
+        id: 'sc2',
+        type: 'multiple_choice',
+        text: 'What part of the job do you enjoy most?',
+        choices: [
+          'Physical / hands-on work',
+          'Working with the team',
+          'Customer interaction',
+          'Problem-solving on the fly',
+          'Getting things done efficiently',
+        ],
+      },
+      {
+        id: 'sc3',
+        type: 'long_text',
+        text: "Is there anything about how Teckton operates that you think could be done better?",
+      },
+      {
+        id: 'sc4',
+        type: 'scale',
+        text: 'Do you feel like your work is valued and recognized?',
+        labels: ['Not really', 'Absolutely'],
+      },
+      {
+        id: 'sc5',
+        type: 'long_text',
+        text: 'Anything else you want Stan to know?',
+      },
+    ],
+  },
+
+  // ── Billy ────────────────────────────────────────────────────
+  billy: {
+    name: 'Billy',
+    intro: "Hey Billy — this won't take long. Stan just wants to hear how things are going from your perspective.",
+    questions: [
+      // TODO: Replace with content from EMPLOYEE_SURVEYS.md when available
+      {
+        id: 'b1',
+        type: 'scale',
+        text: 'How satisfied are you with your work at Teckton right now?',
+        labels: ['Not satisfied', 'Very satisfied'],
+      },
+      {
+        id: 'b2',
+        type: 'multiple_choice',
+        text: 'How do you feel about the pace of work on a typical day?',
+        choices: [
+          'Too slow — not enough to do',
+          'About right',
+          'Busy but manageable',
+          'Stretched thin — too much going on',
+          'Overwhelmed',
+        ],
+      },
+      {
+        id: 'b3',
+        type: 'long_text',
+        text: "What's one thing Teckton could do to make your job better or easier?",
+      },
+      {
+        id: 'b4',
+        type: 'scale',
+        text: 'How well do you feel set up to succeed in your role?',
+        labels: ['Not well', 'Very well'],
+      },
+      {
+        id: 'b5',
+        type: 'long_text',
+        text: 'Anything else on your mind?',
+      },
+    ],
+  },
+
+};
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+
+let state = {
+  person: null,
+  survey: null,
+  currentIndex: -1,   // -1 = intro screen
+  answers: {},        // { questionId: answerValue }
+  phase: 'loading',   // loading | intro | question | submitting | done | error
+};
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  const person = (params.get('person') || '').toLowerCase().trim();
+
+  if (!person || !SURVEYS[person]) {
+    state.phase = 'error';
+    state.errorMsg = person
+      ? `No survey found for "${person}". Check the URL.`
+      : 'Missing survey. Add ?person=name to the URL (e.g. ?person=vicki).';
+    render();
+    return;
+  }
+
+  state.person = person;
+  state.survey = SURVEYS[person];
+  state.phase = 'intro';
+
+  // Show demo banner if in demo mode
+  if (CONFIG.DEMO_MODE) {
+    document.getElementById('demoBanner').style.display = 'block';
+    document.getElementById('demoInfoLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      alert("Demo Mode: Responses are saved to localStorage on this device only. To send responses to the Google Sheet, a developer needs to deploy the Apps Script backend and set DEMO_MODE = false in the code.\n\nSheet ID: " + CONFIG.SHEET_ID);
+    });
+  }
+
+  render();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════════════════════
+
+function render() {
+  const main = document.getElementById('main');
+  const progressWrap = document.getElementById('progressWrap');
+
+  switch (state.phase) {
+    case 'intro':
+      progressWrap.style.display = 'none';
+      main.innerHTML = renderIntro();
+      break;
+
+    case 'question':
+      progressWrap.style.display = 'block';
+      updateProgress();
+      main.innerHTML = renderQuestion();
+      attachQuestionHandlers();
+      break;
+
+    case 'submitting':
+      progressWrap.style.display = 'none';
+      main.innerHTML = renderSubmitting();
+      break;
+
+    case 'done':
+      progressWrap.style.display = 'none';
+      main.innerHTML = renderDone();
+      break;
+
+    case 'error':
+      progressWrap.style.display = 'none';
+      main.innerHTML = renderError();
+      break;
+  }
+}
+
+// ── Intro screen ──────────────────────────────────────────────────
+function renderIntro() {
+  const s = state.survey;
+  const count = s.questions.length;
+  return `
+    <div class="question-card" style="text-align:center; padding:40px 28px;">
+      <div style="font-size:40px; margin-bottom:16px;">👋</div>
+      <h1 style="font-size:24px; font-weight:700; color:var(--forest); margin-bottom:14px;">
+        Hi ${s.name}!
+      </h1>
+      <p style="font-size:16px; color:var(--muted); line-height:1.7; margin-bottom:28px;">
+        ${s.intro}
+      </p>
+      <div style="font-size:13px; color:var(--muted); margin-bottom:28px;">
+        ${count} questions · ~5 minutes
+      </div>
+      <button class="next-btn" id="startBtn" style="max-width:280px; margin:0 auto;">
+        Let's go →
+      </button>
+    </div>
+  `;
+}
+
+// ── Question screen ───────────────────────────────────────────────
+function renderQuestion() {
+  const q = state.survey.questions[state.currentIndex];
+  const num = state.currentIndex + 1;
+  const total = state.survey.questions.length;
+
+  let inputHTML = '';
+
+  if (q.type === 'multiple_choice') {
+    inputHTML = `<div class="choices">
+      ${q.choices.map(c => `
+        <button class="choice-btn${state.answers[q.id] === c ? ' selected' : ''}"
+          data-choice="${escHtml(c)}">${escHtml(c)}</button>
+      `).join('')}
+    </div>`;
+
+  } else if (q.type === 'scale') {
+    const selectedVal = state.answers[q.id];
+    inputHTML = `
+      <div class="scale-wrap">
+        <div class="scale-btns">
+          ${[1,2,3,4,5].map(n => `
+            <button class="scale-btn${selectedVal == n ? ' selected' : ''}"
+              data-scale="${n}">${n}</button>
+          `).join('')}
+        </div>
+        ${q.labels ? `
+          <div class="scale-labels">
+            <span>${escHtml(q.labels[0])}</span>
+            <span>${escHtml(q.labels[1])}</span>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+  } else if (q.type === 'short_text') {
+    inputHTML = `
+      <input type="text" class="text-input" id="textInput"
+        placeholder="Type your answer…"
+        value="${escHtml(state.answers[q.id] || '')}"
+        autocomplete="off" />
+      <button class="next-btn" id="nextBtn" ${!state.answers[q.id] ? 'disabled' : ''}>
+        Next →
+      </button>
+    `;
+
+  } else if (q.type === 'long_text') {
+    inputHTML = `
+      <textarea class="textarea-input" id="textInput"
+        placeholder="Type your answer…"
+        rows="5">${escHtml(state.answers[q.id] || '')}</textarea>
+      <button class="next-btn" id="nextBtn" ${!state.answers[q.id] ? 'disabled' : ''}>
+        ${num === total ? 'Submit →' : 'Next →'}
+      </button>
+    `;
+  }
+
+  return `
+    <div class="question-card">
+      <div class="question-number">Question ${num} of ${total}</div>
+      <div class="question-text">${escHtml(q.text)}</div>
+      ${inputHTML}
+    </div>
+  `;
+}
+
+// ── Submitting screen ─────────────────────────────────────────────
+function renderSubmitting() {
+  return `
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <p style="color:var(--muted); font-size:15px;">Saving your responses…</p>
+    </div>
+  `;
+}
+
+// ── Done screen ───────────────────────────────────────────────────
+function renderDone() {
+  const saved = CONFIG.DEMO_MODE ? 'saved to this device' : 'sent to the Teckton team';
+
+  let demoPanel = '';
+  if (CONFIG.DEMO_MODE) {
+    const answers = state.answers;
+    const questions = state.survey.questions;
+    demoPanel = `
+      <div class="demo-responses">
+        <h3>Your Responses (Demo Mode)</h3>
+        ${questions.map(q => `
+          <div class="demo-response-item">
+            <div class="demo-q">${escHtml(q.text)}</div>
+            <div class="demo-a">${escHtml(answers[q.id] || '—')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="thank-you-screen">
+      <div class="ty-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 19l7 7L29 10" stroke="#96C95B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="ty-title">Thank you, ${state.survey.name}!</h2>
+      <p class="ty-body">
+        Your answers have been ${saved}. Stan will review them personally.
+      </p>
+      <div class="ty-confirm">
+        ✓ ${state.survey.questions.length} responses recorded
+      </div>
+    </div>
+    ${demoPanel}
+  `;
+}
+
+// ── Error screen ──────────────────────────────────────────────────
+function renderError() {
+  return `
+    <div class="error-screen">
+      <div class="error-icon">🔦</div>
+      <div class="error-title">Survey not found</div>
+      <div class="error-body">${escHtml(state.errorMsg || 'Something went wrong.')}</div>
+      <div style="margin-top:20px; font-size:13px; color:var(--muted);">
+        Available surveys:<br/>
+        ${Object.keys(SURVEYS).map(k =>
+          `<a href="?person=${k}" style="color:var(--accent); margin:0 4px;">${SURVEYS[k].name}</a>`
+        ).join(' ')}
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PROGRESS BAR
+// ══════════════════════════════════════════════════════════════════
+
+function updateProgress() {
+  const total = state.survey.questions.length;
+  const current = state.currentIndex + 1;
+  const pct = Math.round((current / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${current} of ${total}`;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// EVENT HANDLERS
+// ══════════════════════════════════════════════════════════════════
+
+document.getElementById('main').addEventListener('click', (e) => {
+  // Start button
+  if (e.target.id === 'startBtn') {
+    state.currentIndex = 0;
+    state.phase = 'question';
+    render();
+    return;
+  }
+});
+
+function attachQuestionHandlers() {
+  const q = state.survey.questions[state.currentIndex];
+  const main = document.getElementById('main');
+
+  // Multiple choice — tap to select + auto-advance
+  main.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.choice;
+      state.answers[q.id] = val;
+      saveToLocalStorage();
+      advance();
+    });
+  });
+
+  // Scale — tap to select + auto-advance
+  main.querySelectorAll('.scale-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.scale;
+      state.answers[q.id] = val;
+      saveToLocalStorage();
+      advance();
+    });
+  });
+
+  // Text input — enable Next when content present
+  const textInput = main.querySelector('#textInput');
+  if (textInput) {
+    textInput.addEventListener('input', () => {
+      const val = textInput.value.trim();
+      state.answers[q.id] = val;
+      const nextBtn = main.querySelector('#nextBtn');
+      if (nextBtn) nextBtn.disabled = !val;
+    });
+  }
+
+  // Next button (text types)
+  const nextBtn = main.querySelector('#nextBtn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      if (!state.answers[q.id]) return;
+      saveToLocalStorage();
+      advance();
+    });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+
+function advance() {
+  const total = state.survey.questions.length;
+  const next = state.currentIndex + 1;
+
+  if (next >= total) {
+    // Last question — submit
+    submitSurvey();
+  } else {
+    state.currentIndex = next;
+    render();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════════════════════
+
+async function submitSurvey() {
+  state.phase = 'submitting';
+  render();
+
+  if (CONFIG.DEMO_MODE) {
+    // Demo: just save to localStorage and show done
+    await new Promise(r => setTimeout(r, 800));
+    saveToLocalStorage();
+    state.phase = 'done';
+    render();
+    return;
+  }
+
+  // Production: POST to Apps Script endpoint
+  const payload = {
+    person: state.person,
+    name: state.survey.name,
+    timestamp: new Date().toISOString(),
+    answers: state.survey.questions.map(q => ({
+      question: q.text,
+      answer: state.answers[q.id] || '',
+    })),
+  };
+
+  try {
+    const res = await fetch(CONFIG.API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      clearLocalStorage();
+      state.phase = 'done';
+    } else {
+      throw new Error(data.error || 'Server returned an error');
+    }
+  } catch (err) {
+    // Fallback: save locally and still show done
+    saveToLocalStorage();
+    state.phase = 'done';
+  }
+
+  render();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LOCAL STORAGE
+// ══════════════════════════════════════════════════════════════════
+
+function storageKey() {
+  return `phargos_survey_${state.person}`;
+}
+
+function saveToLocalStorage() {
+  try {
+    localStorage.setItem(storageKey(), JSON.stringify({
+      person: state.person,
+      answers: state.answers,
+      savedAt: new Date().toISOString(),
+    }));
+  } catch (e) {}
+}
+
+function clearLocalStorage() {
+  try { localStorage.removeItem(storageKey()); } catch (e) {}
+}
+
+// ══════════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════════
+
+function escHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// KICK OFF
+// ══════════════════════════════════════════════════════════════════
+
+init();
+</script>
+</body>
+</html>
